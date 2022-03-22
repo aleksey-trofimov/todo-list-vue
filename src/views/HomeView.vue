@@ -1,18 +1,33 @@
 <template>
-  <div class="home">
+  <div class="header">
     <img alt="Vue logo" src="../assets/logo.png" />
-    <HelloWorld msg="Welcome to Your Vue.js App" />
+
+    <!-- to="{ name: 'editRecord', params: { newRecord: true } }" -->
+
+    <router-link :to="{ name: 'edit', params: { newRecord: true } }">
+      Новая запись
+    </router-link>
+
+    <TodoList />
   </div>
+  <!-- <router-link to="/edit"> Новая запись </router-link> -->
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from "@/components/HelloWorld.vue";
+import TodoList from "@/components/TodoList.vue";
 
 export default {
   name: "HomeView",
   components: {
-    HelloWorld,
+    TodoList,
   },
 };
 </script>
+
+<style scoped>
+.buttonAdd {
+  display: block;
+  background-color: rgb(134, 178, 230);
+}
+</style>
