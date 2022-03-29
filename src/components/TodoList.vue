@@ -1,52 +1,47 @@
 <template>
   <div id="content">
     <h1>Todo List</h1>
-    <div id="list-element">
-      <div id="list-element-name">Первая большая задача</div>
+    <div
+      v-for="element in listData"
+      :key="element.elementTitle"
+      id="list-element"
+    >
+      <div id="list-element-name">{{ element.elementTitle }}</div>
       <div id="list-element-tasks">
-        <label id="tasks-list-label">
-          <input type="checkbox" id="tasks-list-checkbox" checked disabled />
+        <label
+          v-for="task in element.elementTasks.slice(0, 3)"
+          :key="task.taskTitle"
+          class="tasks-list-label"
+        >
+          <input
+            type="checkbox"
+            id="tasks-list-checkbox"
+            v-if="task.taskCompleted"
+            checked
+            disabled
+          />
           <span class="tasks-list-checkmark"></span>
-          Первый подпункт
+          {{ task.taskTitle }}
         </label>
 
-        <label class="container">
-          <input type="radio" id="tasks-list-checkbox" unchecked disabled />
-          <span id="tasks-list-checkmark"></span>
-          Второй подпункт
-        </label>
-
-        <label id="tasks-list-label">
-          <input type="checkbox" id="tasks-list-checkbox" checked disabled />
-          <span id="tasks-list-checkmark"></span>
-          Третий подпункт
-        </label>
+        <label v-if="element.elementTasks.length > 3" class="tasks-list-label"
+          >...</label
+        >
       </div>
-      <div id="list-element-controls">Редактировать Удалить</div>
-    </div>
-
-    <div id="list-element">
-      <div id="list-element-name">Вторая большая задача</div>
-      <div id="list-element-tasks">
-        <label id="tasks-list-label">
-          <input type="checkbox" id="tasks-list-checkbox" unchecked disabled />
-          <span id="tasks-list-checkmark"></span>
-          Первый подпункт
-        </label>
-
-        <label id="tasks-list-label">
-          <input type="checkbox" id="tasks-list-checkbox" unchecked disabled />
-          <span id="tasks-list-checkmark"></span>
-          Второй подпункт
-        </label>
-
-        <label id="tasks-list-label">
-          <input type="checkbox" id="tasks-list-checkbox" checked disabled />
-          <span id="tasks-list-checkmark"></span>
-          Третий подпункт
-        </label>
+      <div id="list-element-controls">
+        <button
+          id="list-element-controls-button"
+          @click="$router.push('/edit/1')"
+        >
+          Редактировать
+        </button>
+        <button
+          id="list-element-controls-button"
+          @click="deleteElement(element)"
+        >
+          Удалить
+        </button>
       </div>
-      <div id="list-element-controls">Редактировать Удалить</div>
     </div>
 
     <p />
@@ -59,8 +54,53 @@ export default {
 
   data() {
     return {
-      listData: [],
+      listData: [
+        {
+          elementTitle: "Заголовок первого элемента",
+          elementTasks: [
+            {
+              taskTitle: "Заголовок первой задачи",
+              taskCompleted: true,
+            },
+            {
+              taskTitle: "Заголовок второй задачи",
+              taskCompleted: false,
+            },
+            {
+              taskTitle: "Заголовок третьей задачи",
+              taskCompleted: false,
+            },
+            {
+              taskTitle: "Заголовок четвертой задачи",
+              taskCompleted: false,
+            },
+          ],
+        },
+        {
+          elementTitle: "Заголовок второго элемента",
+          elementTasks: [
+            {
+              taskTitle: "Заголовок первой задачи",
+              taskCompleted: true,
+            },
+            {
+              taskTitle: "Заголовок второй задачи",
+              taskCompleted: false,
+            },
+            {
+              taskTitle: "Заголовок третьей задачи",
+              taskCompleted: false,
+            },
+          ],
+        },
+      ],
     };
+  },
+
+  methods: {
+    deleteElement(elementToRemove) {
+      this.listData = this.listData.filter((t) => t !== elementToRemove);
+    },
   },
 };
 </script>
@@ -88,44 +128,82 @@ export default {
   margin-bottom: 11px;
 }
 
-#list-element-controls {
-  color: white;
-  opacity: 0.7;
-}
+/*----------------------------- tasks-list -------------------------------------*/
 
-#tasks-list-label {
-  list-style-type: none;
-  margin-left: 15px;
-  padding: 0px;
+/* The container */
+.tasks-list-label {
   display: block;
   position: relative;
-  cursor: pointer;
+  padding-left: 40px;
+  margin-bottom: 12px;
   font-size: 18px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
+  cursor: text;
 }
 
-#tasks-list-checkbox {
-  background-color: red;
-  color: green;
-}
-
-/* Hide the browser's default radio button */
-#tasks-list-label input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-}
-
+/* Checkbox */
 .tasks-list-checkmark {
   position: absolute;
   top: 0;
   left: 0;
-  height: 18px;
-  width: 18px;
-  background-color: #bcc5cf;
-  border-radius: 30%;
+  margin-left: 16px;
+  margin-top: 2px;
+  height: 15px;
+  width: 15px;
+  background-color: azure;
+}
+
+/* Checkmark/indicator */
+.tasks-list-label .tasks-list-checkmark:after {
+  left: 2px;
+  top: 0px;
+  width: 8px;
+  height: 8px;
+  border: solid red;
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* Hide the browser's default checkbox */
+.tasks-list-label input {
+  position: absolute;
+  opacity: 0;
+  height: 0;
+  width: 0;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.tasks-list-checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the checkmark when checked */
+.tasks-list-label input:checked ~ .tasks-list-checkmark:after {
+  display: block;
+}
+
+/*----------------------------- list-element-controls -------------------------------------*/
+
+#list-element-controls-button {
+  color: white;
+  opacity: 0.7;
+  border: none;
+  background-color: #5a7086;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-right: 15px;
+  margin-left: 15px;
+  font-size: 18px;
+  cursor: pointer;
+  display: inline-block;
+  border-radius: 10px;
+}
+
+#list-element-controls-button:hover {
+  background-color: #eee;
+  color: #111;
 }
 </style>
