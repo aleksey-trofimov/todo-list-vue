@@ -54,47 +54,55 @@ export default {
 
   data() {
     return {
-      listData: [
-        {
-          elementTitle: "Заголовок первого элемента",
-          elementTasks: [
-            {
-              taskTitle: "Заголовок первой задачи",
-              taskCompleted: true,
-            },
-            {
-              taskTitle: "Заголовок второй задачи",
-              taskCompleted: false,
-            },
-            {
-              taskTitle: "Заголовок третьей задачи",
-              taskCompleted: false,
-            },
-            {
-              taskTitle: "Заголовок четвертой задачи",
-              taskCompleted: false,
-            },
-          ],
-        },
-        {
-          elementTitle: "Заголовок второго элемента",
-          elementTasks: [
-            {
-              taskTitle: "Заголовок первой задачи",
-              taskCompleted: true,
-            },
-            {
-              taskTitle: "Заголовок второй задачи",
-              taskCompleted: false,
-            },
-            {
-              taskTitle: "Заголовок третьей задачи",
-              taskCompleted: false,
-            },
-          ],
-        },
-      ],
+      listData: [],
     };
+  },
+
+  created() {
+    const sampleData = [
+      {
+        elementTitle: "Заголовок первого элемента",
+        elementTasks: [
+          {
+            taskTitle: "Заголовок первой задачи",
+            taskCompleted: true,
+          },
+          {
+            taskTitle: "Заголовок второй задачи",
+            taskCompleted: false,
+          },
+          {
+            taskTitle: "Заголовок третьей задачи",
+            taskCompleted: false,
+          },
+          {
+            taskTitle: "Заголовок четвертой задачи",
+            taskCompleted: false,
+          },
+        ],
+      },
+      {
+        elementTitle: "Заголовок второго элемента",
+        elementTasks: [
+          {
+            taskTitle: "Заголовок первой задачи",
+            taskCompleted: true,
+          },
+          {
+            taskTitle: "Заголовок второй задачи",
+            taskCompleted: false,
+          },
+          {
+            taskTitle: "Заголовок третьей задачи",
+            taskCompleted: false,
+          },
+        ],
+      },
+    ];
+
+    localStorage.setItem("todo-list-data", JSON.stringify(sampleData));
+
+    this.listData = sampleData;
   },
 
   methods: {

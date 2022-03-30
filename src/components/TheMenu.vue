@@ -1,6 +1,6 @@
 <template>
   <div id="menu">
-    <router-link id="" to="/edit">Новая запись</router-link>
+    <router-link id="" to="/edit/new">Новая запись</router-link>
     <router-link id="" to="/tech">Тех. задание</router-link>
     <router-link id="" to="/about">О приложении</router-link>
   </div>
