@@ -31,7 +31,7 @@
       <div id="list-element-controls">
         <button
           id="list-element-controls-button"
-          @click="$router.push('/edit/1')"
+          @click="$router.push(`/edit/change/${getElementIndex(element)}`)"
         >
           Редактировать
         </button>
@@ -59,11 +59,12 @@ export default {
   },
 
   created() {
+    /*
     const sampleData = [
       {
         elementTitle: "Заголовок первого элемента",
         elementTasks: [
-          {
+          {            
             taskTitle: "Заголовок первой задачи",
             taskCompleted: true,
           },
@@ -99,15 +100,19 @@ export default {
         ],
       },
     ];
+    */
 
-    localStorage.setItem("todo-list-data", JSON.stringify(sampleData));
+    // localStorage.setItem("todo-list-data", JSON.stringify(sampleData));
 
-    this.listData = sampleData;
+    this.listData = JSON.parse(localStorage.getItem("todo-list-data"));
   },
 
   methods: {
     deleteElement(elementToRemove) {
       this.listData = this.listData.filter((t) => t !== elementToRemove);
+    },
+    getElementIndex(element) {
+      return this.listData.findIndex((i) => i == element);
     },
   },
 };
