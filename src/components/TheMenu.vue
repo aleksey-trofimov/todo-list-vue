@@ -8,10 +8,7 @@
 
 <style lang="css" scoped>
 #menu {
-  position: fixed;
-  top: 112px;
-  left: 0;
-  right: 0;
+  position: static;
   margin-top: 0;
   padding: 7px;
   background: #3f5369;

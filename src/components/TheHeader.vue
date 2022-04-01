@@ -7,12 +7,8 @@
 
 <style lang="css" scoped>
 #header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  margin-top: 0;
-  padding: 30px;
+  margin: 0px;
+  padding: 15px;
   background: #2c3e50;
   color: white;
   display: flex;
