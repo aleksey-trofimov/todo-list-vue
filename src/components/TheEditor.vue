@@ -31,6 +31,7 @@
         <!-- ------------------------------------------------------------------- -->
         <input
           v-model="task.taskTitle"
+          @keydown="updateElement()"
           @keydown.enter="updateElement()"
           class="list-element__task_input"
         />
@@ -45,11 +46,25 @@
         <button class="list-element__controls_button" @click="updateElement()">
           Сохранить
         </button>
+        <button
+          class="list-element__controls_button"
+          v-if="this.editAction === 'change'"
+          @click="showPreviousChange()"
+        >
+          &lt;=
+        </button>
 
         <button
           class="list-element__controls_button"
           v-if="this.editAction === 'change'"
-          @click="deleteElement()"
+          @click="showNextChange()"
+        >
+          =&gt;
+        </button>
+        <button
+          class="list-element__controls_button"
+          v-if="this.editAction === 'change'"
+          @click="deleteCurrentElement()"
         >
           Удалить заметку
         </button>
@@ -60,7 +75,7 @@
 
   <!-- Модальное окно  -->
   <modal-window ref="modalWindowRef">
-    <template #modalHeader>Удалить задачу?</template>
+    <template #modalHeader>Удалить заметку?</template>
 
     <!-- Функции описаны в компоненте модального окна -->
     <template #modalButton="{ confirmOk, closeCancel }">
@@ -87,6 +102,7 @@ export default {
     return {
       editAction: "", // new или change
       listData: [],
+      elementHistoryData: [],
       currentElement: null,
     };
   },
@@ -123,13 +139,29 @@ export default {
       });
     },
 
-    deleteElement(elementToRemove) {
+    deleteCurrentElement() {
       this.showModalWindow().then((result) => {
         if (result) {
-          this.listData = this.listData.filter((t) => t !== elementToRemove);
+          this.listData = this.listData.filter(
+            (t) => t !== this.currentElement
+          );
           localStorage.setItem("todo-list-data", JSON.stringify(this.listData));
+          this.$router.push("/");
         }
       });
+    },
+
+    showPreviousChange() {
+      console.log("showPreviousChange");
+    },
+
+    showNextChange() {
+      console.log("showNextChange");
+    },
+
+    addHistoryRecord() {
+      this.elementHistoryData.push(this.currentElement);
+      // Обработать, когда идет откат назад, потом редактирование.
     },
 
     async showModalWindow() {
@@ -158,6 +190,7 @@ export default {
 
     if (this.editAction === "change" && this.$route.params.id) {
       this.currentElement = this.listData[this.$route.params.id];
+      this.elementHistoryData.push(this.currentElement);
     }
     //    }
 
