@@ -46,15 +46,38 @@
 
     <p />
   </div>
+
+  <!-- Модальное окно  -->
+  <modal-window ref="modalWindowRef">
+    <template #modalHeader>Удалить заметку?</template>
+
+    <!-- Функции описаны в компоненте модального окна -->
+    <template #modalButton="{ confirmOk, closeCancel }">
+      <button class="modal-footer__button" @click="confirmOk">
+        Подтвердить
+      </button>
+      <button class="modal-footer__button" @click="closeCancel">
+        Отменить
+      </button>
+    </template>
+  </modal-window>
 </template>
 
 <script>
+import ModalWindow from "@/components/ModalWindow.vue";
 export default {
   name: "TodoList",
+
+  components: {
+    ModalWindow,
+  },
+
+  CONFIRMATION_TEXT: "i understand",
 
   data() {
     return {
       listData: [],
+      modalWindowConfirmationText: "",
     };
   },
 
@@ -62,13 +85,40 @@ export default {
     this.listData = JSON.parse(localStorage.getItem("todo-list-data"));
   },
 
+  computed: {
+    modalWindowConfirmationCorrect() {
+      return (
+        this.modalWindowConfirmationText === this.$options.CONFIRMATION_TEXT
+      );
+    },
+  },
+
   methods: {
     deleteElement(elementToRemove) {
-      this.listData = this.listData.filter((t) => t !== elementToRemove);
-      localStorage.setItem("todo-list-data", JSON.stringify(this.listData));
+      this.showModalWindow().then((result) => {
+        if (result) {
+          this.listData = this.listData.filter((t) => t !== elementToRemove);
+          localStorage.setItem("todo-list-data", JSON.stringify(this.listData));
+        }
+      });
     },
     getElementIndex(element) {
       return this.listData.findIndex((i) => i == element);
+    },
+    async showModalWindow() {
+      this.modalWindowConfirmationText = "";
+      console.log("pressed");
+      const popupResult = await this.$refs.modalWindowRef.openModal();
+
+      if (!popupResult) {
+        console.log("Modal cancelled");
+        return false;
+      }
+
+      if (popupResult) {
+        console.log("Modal confirmed");
+        return true;
+      }
     },
   },
 };

@@ -11,29 +11,16 @@ const routes = [
     path: "/edit/:action/:id?",
     name: "edit",
     props: true,
-    // route level code-splitting
-    // this generates a separate chunk (edit.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
+    // lazy-load
     component: () =>
       import(/* webpackChunkName: "edit" */ "../views/EditView.vue"),
   },
   {
     path: "/tech",
     name: "tech",
-    // route level code-splitting
-    // this generates a separate chunk (edit.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
+    // lazy-load
     component: () =>
       import(/* webpackChunkName: "tech" */ "../views/TechView.vue"),
-  },
-  {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (edit.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
 ];
 

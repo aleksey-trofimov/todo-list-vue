@@ -1,10 +1,10 @@
 <template>
   <div class="content">
-    <h1 v-if="this.editAction === 'new'">Создание нового элемента</h1>
-    <h1 v-if="this.editAction === 'change'">Редактирование элемента</h1>
+    <h1 v-if="this.editAction === 'new'">Создание новой заметки</h1>
+    <h1 v-if="this.editAction === 'change'">Редактирование заметки</h1>
     <div class="list-element">
       <div class="list-element__title">
-        Заголовок элемента:
+        Заголовок заметки:
         <input
           v-model="this.currentElement.elementTitle"
           class="list-element__title_input"
@@ -39,23 +39,49 @@
         </button>
       </div>
 
+      <button class="list-element__button_addtask" @click="addTask()">+</button>
+
       <div class="list-element__controls">
         <button class="list-element__controls_button" @click="updateElement()">
           Сохранить
         </button>
 
-        <button class="list-element__controls_button" @click="addTask()">
-          Добавить задачу
+        <button
+          class="list-element__controls_button"
+          v-if="this.editAction === 'change'"
+          @click="deleteElement()"
+        >
+          Удалить заметку
         </button>
       </div>
     </div>
     <p />
   </div>
+
+  <!-- Модальное окно  -->
+  <modal-window ref="modalWindowRef">
+    <template #modalHeader>Удалить задачу?</template>
+
+    <!-- Функции описаны в компоненте модального окна -->
+    <template #modalButton="{ confirmOk, closeCancel }">
+      <button class="modal-footer__button" @click="confirmOk">
+        Подтвердить
+      </button>
+      <button class="modal-footer__button" @click="closeCancel">
+        Отменить
+      </button>
+    </template>
+  </modal-window>
 </template>
 
 <script>
+import ModalWindow from "@/components/ModalWindow.vue";
 export default {
   name: "TheEditor",
+
+  components: {
+    ModalWindow,
+  },
 
   data() {
     return {
@@ -79,7 +105,6 @@ export default {
       }
     },
     getTaskIndex(task) {
-      //return this.listData[this.$route.params.id].elementTasks.findIndex( (i) => i == task );
       return this.currentElement.elementTasks.findIndex((i) => i == task);
     },
     addTask() {
@@ -90,22 +115,51 @@ export default {
       this.currentElement.elementTasks.push(newTask);
     },
     deleteTask(taskToDelete) {
-      this.currentElement.elementTasks =
-        this.currentElement.elementTasks.filter((t) => t !== taskToDelete);
+      this.showModalWindow().then((result) => {
+        if (result) {
+          this.currentElement.elementTasks =
+            this.currentElement.elementTasks.filter((t) => t !== taskToDelete);
+        }
+      });
+    },
+
+    deleteElement(elementToRemove) {
+      this.showModalWindow().then((result) => {
+        if (result) {
+          this.listData = this.listData.filter((t) => t !== elementToRemove);
+          localStorage.setItem("todo-list-data", JSON.stringify(this.listData));
+        }
+      });
+    },
+
+    async showModalWindow() {
+      this.modalWindowConfirmationText = "";
+      console.log("pressed");
+      const popupResult = await this.$refs.modalWindowRef.openModal();
+
+      if (!popupResult) {
+        console.log("Modal cancelled");
+        return false;
+      }
+
+      if (popupResult) {
+        console.log("Modal confirmed");
+        return true;
+      }
     },
   },
 
   created() {
     this.editAction = this.$route.params.action;
-    this.listData = JSON.parse(localStorage.getItem("todo-list-data"));
+    this.listData = JSON.parse(localStorage.getItem("todo-list-data")) ?? [];
 
-    if (this.editAction === "change") {
-      // Забираем из local storage массив с записями
+    //   if (this.editAction === "change") {
+    // Забираем из local storage массив с записями
 
-      if (this.editAction === "change" && this.$route.params.id) {
-        this.currentElement = this.listData[this.$route.params.id];
-      }
+    if (this.editAction === "change" && this.$route.params.id) {
+      this.currentElement = this.listData[this.$route.params.id];
     }
+    //    }
 
     if (this.editAction === "new") {
       this.currentElement = {
@@ -136,12 +190,32 @@ export default {
   opacity: 0.7;
   font-size: 26px;
 }
+
+.list-element__content {
+  color: #eee;
+  opacity: 0.7;
+  font-size: 26px;
+  margin-top: 20px;
+}
+
 .list-element__title_input {
   color: #111;
   opacity: 0.7;
   font-size: 18px;
   display: block;
   margin-top: 5px;
+  width: 93%;
+}
+
+.list-element__content_textarea {
+  color: #111;
+  opacity: 0.7;
+  font-size: 18px;
+  display: block;
+  margin-top: 5px;
+  width: 93%;
+  height: 120px;
+  resize: none;
 }
 
 .list-element__task_title {
@@ -158,6 +232,7 @@ export default {
   display: inline-block;
   margin-top: 0px;
   margin-left: 35px;
+  width: 78%;
 }
 
 .list-element__controls {
@@ -180,6 +255,27 @@ export default {
 }
 
 .list-element__button_delete:hover {
+  background-color: #eee;
+  color: #111;
+}
+
+.list-element__button_addtask {
+  color: white;
+  opacity: 0.7;
+  border: none;
+  background-color: #5a7086;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-top: 15px;
+  margin-right: 4px;
+  margin-left: 35px;
+  font-size: 20px;
+  cursor: pointer;
+  display: block;
+  border-radius: 5px;
+}
+
+.list-element__button_addtask:hover {
   background-color: #eee;
   color: #111;
 }
