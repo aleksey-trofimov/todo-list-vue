@@ -1,13 +1,14 @@
 <!-- Отображает только заголовок -->
 <template>
-  <div id="header">
+  <div class="header">
     <router-link id="home" to="/">Todo List Vue</router-link>
   </div>
 </template>
 
 <style lang="css" scoped>
-#header {
-  margin: 0px;
+.header {
+  margin: auto;
+  max-width: 600px;
   padding: 15px;
   background: #2c3e50;
   color: white;
@@ -16,7 +17,7 @@
   border-bottom: 5px solid #4e6c71;
 }
 
-#header a {
+.header a {
   font-size: 40px;
   text-decoration-color: red;
   display: inline-block;
@@ -24,7 +25,7 @@
   opacity: 0.7;
 }
 
-#header a:hover {
+.header a:hover {
   opacity: 1;
 }
 </style>

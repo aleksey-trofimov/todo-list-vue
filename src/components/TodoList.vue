@@ -165,7 +165,7 @@ export default {
   top: 0;
   left: 0;
   margin-left: 16px;
-  margin-top: 2px;
+  margin-top: 3px;
   height: 15px;
   width: 15px;
   background-color: azure;

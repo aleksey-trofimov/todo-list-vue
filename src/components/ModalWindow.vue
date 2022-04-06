@@ -25,8 +25,8 @@ export default {
     document.removeEventListener("keydown", this.handleKeydown);
   },
 
-  // Фактически эту переменную можно было не объявлять. Она напоминает ,что далее в коде она используется
-  // для хранения функций для промиса
+  /* Фактически эту переменную можно было не объявлять. Она напоминает ,что далее в коде она
+     используется для хранения функций для промиса */
   modalController: null,
 
   data() {
@@ -36,8 +36,8 @@ export default {
   },
   methods: {
     openModal() {
-      // Создаем свой промис, чтобы возвращать его для работы асинхронной функции, которая будет вызывать
-      // модальное окно
+      /* Создаем свой промис, чтобы возвращать его для работы асинхронной функции,
+         которая будет вызывать модальное окно */
       let resolve;
       let reject;
       const popupPromise = new Promise((ok, fail) => {
@@ -45,22 +45,22 @@ export default {
         reject = fail;
       });
 
-      // Создаем свою переменную в $options и записываем в неё функции промиса для вызова их из других
-      // функций компонента
+      /* Создаем свою переменную в $options и записываем в неё функции промиса для вызова
+         их из других функций компонента */
       this.$options.modalController = { resolve, reject };
       this.showModal = true;
 
       return popupPromise;
     },
 
+    // Модальное окно закрыто с подтверждением
     confirmModal() {
-      console.log("Модальное окно закрыто с подтверждением");
       this.$options.modalController.resolve(true);
       this.showModal = false;
     },
 
+    // Модальное окно закрыто по отмене
     closeModal() {
-      console.log("Модальное окно закрыто по отмене");
       this.$options.modalController.resolve(false);
       this.showModal = false;
     },
