@@ -21,9 +21,9 @@
             disabled
           />
           <span class="tasks-list__checkmark"></span>
-          {{ task.taskTitle }}
+          <div class="tasks-list__tasktitle">{{ task.taskTitle }}</div>
         </label>
-
+        <!-- Отображаем не больше трех задач. Вместо остальных показываем ... -->
         <label v-if="element.elementTasks.length > 3" class="tasks-list__label"
           >...</label
         >
@@ -157,6 +157,11 @@ export default {
   margin-bottom: 12px;
   font-size: 18px;
   cursor: text;
+}
+
+.tasks-list__tasktitle {
+  display: inline-block;
+  margin-top: 1px;
 }
 
 /* Checkbox */

@@ -50,7 +50,7 @@
         class="list-element__button_cancelchanges"
         @click="cancelChanges()"
         v-if="this.editAction === 'change'"
-        :disabled="this.elementHistoryPointer == 0"
+        :disabled="this.historyPointer == 0"
       >
         Отменить изменения
       </button>
@@ -64,7 +64,7 @@
           class="list-element__controls_button"
           v-if="this.editAction === 'change'"
           @click="showPreviousChange()"
-          :disabled="this.elementHistoryPointer == 0"
+          :disabled="this.historyPointer == 0"
         >
           &lt;=
         </button>
@@ -73,9 +73,7 @@
           class="list-element__controls_button"
           v-if="this.editAction === 'change'"
           @click="showNextChange()"
-          :disabled="
-            this.elementHistoryPointer >= this.elementHistoryData.length - 1
-          "
+          :disabled="this.historyPointer >= this.historyData.length - 1"
         >
           =&gt;
         </button>
@@ -120,8 +118,8 @@ export default {
     return {
       editAction: "", // new или change
       listData: [],
-      elementHistoryData: [],
-      elementHistoryPointer: 0,
+      historyData: [],
+      historyPointer: 0,
       currentElement: null,
       beforeEditElement: null,
 
@@ -158,12 +156,13 @@ export default {
     deleteTask(taskToDelete) {
       this.currentElement.elementTasks =
         this.currentElement.elementTasks.filter((t) => t !== taskToDelete);
+      this.addHistoryRecord();
     },
     cancelChanges() {
       this.currentElement = this.copyObject(this.beforeEditElement);
-      this.elementHistoryData = [];
-      this.elementHistoryData.push(this.copyObject(this.currentElement));
-      this.elementHistoryPointer = 0;
+      this.historyData = [];
+      this.historyData.push(this.copyObject(this.currentElement));
+      this.historyPointer = 0;
     },
 
     /* Такой вот метод копирования объекта по значению, а не по ссылке :) */
@@ -184,38 +183,35 @@ export default {
     },
     // ------------------- История ------------------------------------------------------- //
     showPreviousChange() {
-      if (this.elementHistoryPointer > 0) {
-        this.elementHistoryPointer--;
+      if (this.historyPointer > 0) {
+        this.historyPointer--;
       }
       this.currentElement = this.copyObject(
-        this.elementHistoryData[this.elementHistoryPointer]
+        this.historyData[this.historyPointer]
       );
     },
 
     showNextChange() {
-      if (this.elementHistoryPointer < this.elementHistoryData.length - 1) {
-        this.elementHistoryPointer++;
+      if (this.historyPointer < this.historyData.length - 1) {
+        this.historyPointer++;
         this.currentElement = this.copyObject(
-          this.elementHistoryData[this.elementHistoryPointer]
+          this.historyData[this.historyPointer]
         );
       }
     },
 
     addHistoryRecord() {
-      let historyLength = this.elementHistoryData.length;
+      let historyLength = this.historyData.length;
 
       /* Обработка ситуации, когда откатились назад по истории и продолжили редактировать*/
-      if (historyLength > this.elementHistoryPointer + 1) {
-        this.elementHistoryData = this.elementHistoryData.slice(
-          0,
-          this.elementHistoryPointer + 1
-        );
+      if (historyLength > this.historyPointer + 1) {
+        this.historyData = this.historyData.slice(0, this.historyPointer + 1);
       }
       /* ------------------------------------------------------------------------------- */
 
-      this.elementHistoryData.push(this.copyObject(this.currentElement));
+      this.historyData.push(this.copyObject(this.currentElement));
 
-      this.elementHistoryPointer++;
+      this.historyPointer++;
     },
 
     // --------------------------------------------------------------------------------------- //
@@ -238,7 +234,7 @@ export default {
 
     if (this.editAction === "change" && this.$route.params.id) {
       this.currentElement = this.listData[this.$route.params.id];
-      this.elementHistoryData.push(this.copyObject(this.currentElement));
+      this.historyData.push(this.copyObject(this.currentElement));
       //Сохраняем состояние перед редактированием
       this.beforeEditElement = this.copyObject(this.currentElement);
     }
