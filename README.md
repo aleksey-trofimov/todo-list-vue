@@ -1,16 +1,16 @@
 # todo-list-vue
 
-## Project setup
+## Установка
 ```
 npm install
 ```
 
-### Compiles and hot-reloads for development
+## Запуск в режиме разработки
 ```
 npm run serve
 ```
 
-### Техническое задание
+## Техническое задание
 
 Средствами Vue.js реализуйте небольшое SPA приложение для заметок.
 
